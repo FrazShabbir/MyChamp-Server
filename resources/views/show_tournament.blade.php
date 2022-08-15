@@ -2,10 +2,12 @@
 @section('main-section')
     <div class="row">
         <div class="col-12">
+            <a href="{{ route('tournament.edit',$tournament->id)}}">
+                <button class="btn text-white mb-4" style="background: #4675A9">Edit Tournament</button>
+            </a>
             <a href="{{ url('/tournament_players', $tournament->id)}}">
                 <button class="btn text-white mb-4" style="background: #4675A9">Tournament Players</button>
             </a>
-
             <table id="example" class="table table-responsive-lg table-bordered">
                 <thead>
                     <tr>
