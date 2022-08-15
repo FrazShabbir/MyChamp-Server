@@ -394,6 +394,17 @@ class indexController extends Controller
             $tournament->venue = $Request['venue'];
             $tournament->status = '1';
             $tournament->host_name = $host->name;
+
+            $tournament->end_date = $Request['end_date'];
+            $tournament->country = $Request['country'];
+            $tournament->state = $Request['date'];
+            $tournament->repeat = $Request['repeat'];
+            $tournament->format = $Request['format'];
+            $tournament->category = $Request['category'];
+
+
+
+
             $tournament->save();
             toastr()->success('Add tournament successfully!');
             return redirect('/tournament');
@@ -472,6 +483,55 @@ class indexController extends Controller
         }
     }
 
+    public function edit_tournament($id)
+    {
+        // dd('j');
+        if (session()->get('name')) {
+            $tournament = tournament::find($id);
+            $host = host::select('*')
+            ->where('type', '=', "host")
+            ->get();
+         
+            return view('edit_tournament')
+            ->with('tournament', $tournament)
+            ->with('host', $host);
+           
+            
+        } else {
+            return redirect('/');
+        }
+    }
+
+    public function update_tournament(Request $request, $id){
+        if (session()->get('name')) {
+            $tournament = tournament::find($id);
+            $tournament->name = $request->name;
+            $tournament->description = $request->description;
+            $tournament->host_id = $request->host_id;
+            $host = host::find($tournament->host_id);
+            $tournament->date = $request->date;
+            $tournament->start_time = $request->start_time;
+            $tournament->end_time = $request->end_time;
+            $tournament->venue = $request->venue;
+            $tournament->status = $request->status;
+            $tournament->host_name = $host->name;
+            $tournament->end_date = $request->end_date;
+            $tournament->country = $request->country;
+            $tournament->state = $request->date;
+            $tournament->repeat = $request->repeat;
+            $tournament->format = $request->format;
+            $tournament->category = $request->category;
+            $tournament->save();
+            toastr()->success('Your successfully update tournament');
+            return redirect('/tournament');
+        } else {
+            return redirect('/');
+        }
+
+    }
+
+    
+    
 
 
     public function tournament_players($id)

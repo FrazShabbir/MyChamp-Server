@@ -10,4 +10,5 @@ class tournament extends Model
 	protected $table = "tournament";
 	protected $primaryKey = "id";
     use HasFactory;
+	protected $guarded = [];
 }

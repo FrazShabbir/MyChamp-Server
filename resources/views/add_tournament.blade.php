@@ -17,15 +17,22 @@
                     <input type="text" name="description"  class="form-control" required="">
 
 
-                    <label  class="form-label mt-3" >Date</label>  
+                    <label  class="form-label mt-3" >Start Date</label>  
                     <input type="date" name="date"  class="form-control" required="" >
+
+                    <label  class="form-label mt-3" >End Date</label>  
+                    <input type="date" name="end_date"  class="form-control" required="" >
+
 
                     <label  class="form-label mt-3" >Start Time</label>  
                     <input type="time" name="start_time"  class="form-control" required="" >
-
-
+                    
                     <label  class="form-label mt-3" >End Time</label>  
                     <input type="time" name="end_time"  class="form-control" required="" >
+
+
+                   
+
 
                     <label  class="form-label mt-3">Host Name</label>  
                     <select class="form-control" name="host_id">
@@ -38,6 +45,22 @@
                     
                     <label  class="form-label mt-3">Venue</label>  
                     <input type="text" name="venue"  class="form-control" required="" >
+
+                    <label  class="form-label mt-3">Country</label>  
+                    <input type="text" name="country"  class="form-control" required="" >
+
+                    <label  class="form-label mt-3">State</label>  
+                    <input type="text" name="state"  class="form-control" required="" >
+
+                    <label  class="form-label mt-3">Repeat</label>  
+                    <input type="text" name="repeat"  class="form-control" required="" >
+                    <label  class="form-label mt-3">Category</label>  
+                    <input type="text" name="category"  class="form-control" required="" >
+
+                    <label  class="form-label mt-3">Format</label>  
+                    <input type="text" name="format"  class="form-control" required="" >
+
+
 
                     <!-- <a href="{{url('signup')}}" class="mt-5" >No account Sign Up</a> -->
                     <button class="btn mt-3 btn-light" type="submite">Add</button>

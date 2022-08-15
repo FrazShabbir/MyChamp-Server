@@ -102,10 +102,13 @@ Route::post('/delete_host',[indexController::class,'delete_host']);
 
 
 Route::get('/tournament',[indexController::class,'tournament']);
-
-
 Route::get('/add_tournament',[indexController::class,'add_tournament']);
 Route::post('/add_tournament',[indexController::class,'insert_tournament']);
+
+Route::get('/tournament/{id}',[indexController::class,'show_tournament'])->name('tournament.show');
+Route::get('/tournament/{id}/edit',[indexController::class,'edit_tournament'])->name('tournament.edit');
+Route::put('/tournament/{id}/update',[indexController::class,'update_tournament'])->name('tournament.update');
+
 
 
 Route::get('/asign_players',[indexController::class,'asign_players']);
@@ -123,7 +126,6 @@ Route::post('/tournament_accepted',[indexController::class,'tournament_accepted'
 
 
 
-Route::get('/tournament/{id}',[indexController::class,'show_tournament'])->name('tournament.show');
 
 Route::get('/tournament_players/{id}',[indexController::class,'tournament_players']);
 
