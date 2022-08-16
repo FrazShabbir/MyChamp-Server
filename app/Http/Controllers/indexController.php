@@ -471,7 +471,7 @@ class indexController extends Controller
     {
         // dd('j');
         if (session()->get('name')) {
-            $tournament = tournament::find($id);
+            $tournament = tournament::findOrFail($id);
 
          
             return view('show_tournament')
@@ -487,7 +487,7 @@ class indexController extends Controller
     {
         // dd('j');
         if (session()->get('name')) {
-            $tournament = tournament::find($id);
+            $tournament = tournament::findOrFail($id);
             $host = host::select('*')
             ->where('type', '=', "host")
             ->get();
@@ -504,7 +504,7 @@ class indexController extends Controller
 
     public function update_tournament(Request $request, $id){
         if (session()->get('name')) {
-            $tournament = tournament::find($id);
+            $tournament = tournament::findOrFail($id);
             $tournament->name = $request->name;
             $tournament->description = $request->description;
             $tournament->host_id = $request->host_id;
@@ -530,6 +530,18 @@ class indexController extends Controller
 
     }
 
+    public function destroy_tournament($id)
+    {
+        // dd('He');
+        if (session()->get('name')) {
+            $tournament = tournament::findOrFail($id);
+            $tournament->delete();
+            toastr()->success('Your successfully delete tournament');
+            return redirect('/tournament');
+        } else {
+            return redirect('/');
+        }
+    }
     
     
 

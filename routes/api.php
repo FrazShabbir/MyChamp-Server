@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\apiController;
 use App\Http\Controllers\Api\UserAuthAPIController;
+use App\Http\Controllers\Api\GroupAPIController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,46 +20,38 @@ use App\Http\Controllers\Api\UserAuthAPIController;
 // Route::post('/insert_host', [apiController::class , 'insert_host']);
 
 
+// Groups APIs
+Route::post("group/create", [GroupAPIController::class, "createGroup"]);
+Route::put("group/{id}/edit", [GroupAPIController::class, "editGroup"]);
+Route::post("group/player/add", [GroupAPIController::class, "addPlayerToGroup"]);
+Route::post("group/player/delete", [GroupAPIController::class, "removePlayerToGroup"]);
+Route::get("all-groups/{id}", [GroupAPIController::class, "groupsOfHost"]);
+Route::get("group/player/list/{id}", [GroupAPIController::class, "listPlayerInGroup"]);
+Route::post("group/delete", [GroupAPIController::class, "deleteGroup"]);
 
-Route::post("forget-password", [UserAuthAPIController::class, "forgetPassword"]);
-Route::post("confirm-otp", [UserAuthAPIController::class, "confirm_otp"]);
-Route::post("set-password", [UserAuthAPIController::class, "set_password"]);
 
-
-
-Route::post("register", [apicontroller::class, "register"]);
-
+// Tournament APIs
 Route::post("player_login", [apicontroller::class, "player_login"]);
-
 Route::get("player_profile/{id}", [apicontroller::class, "player_profile"]);
-
 Route::post("update_player/{id}", [apicontroller::class, "update_player"]);
-
-
 Route::post('/add_tournament',[apiController::class,'insert_tournament']);
 Route::post('/tournament/{id}/delete',[apiController::class,'delete_tournament'])->name('tournament.delete');
-Route::put('/tournament/{id}/edit',[apiController::class,'edit_tournament'])->name('tournament.edit');
-
+Route::put('/tournament/{id}/edit',[apiController::class,'edit_tournament'])->name('api.tournament.edit');
 Route::get('/host_tournament/{id}',[apiController::class,'host_tournament']);
-
 Route::get('/tournaments',[apiController::class,'tournaments']);
-
-
 Route::get('/tournaments_players/{id}',[apiController::class,'tournaments_players']);
-
+Route::post('/insert_tournament_players',[apiController::class,'insert_tournament_players']);
+Route::post('/player_tournaments',[apiController::class,'player_tournaments']);
+Route::post('/player_add_tournaments',[apiController::class,'player_add_tournaments']);
 
 Route::get('/free_players/{id}',[apiController::class,'free_players']);
 
+// Auth APIs
+Route::post("forget-password", [UserAuthAPIController::class, "forgetPassword"]);
+Route::post("confirm-otp", [UserAuthAPIController::class, "confirm_otp"]);
+Route::post("set-password", [UserAuthAPIController::class, "set_password"]);
+Route::post("register", [apicontroller::class, "register"]);
 
-
-
-Route::post('/insert_tournament_players',[apiController::class,'insert_tournament_players']);
-
-
-Route::post('/player_tournaments',[apiController::class,'player_tournaments']);
-
-
-Route::post('/player_add_tournaments',[apiController::class,'player_add_tournaments']);
 
 
 

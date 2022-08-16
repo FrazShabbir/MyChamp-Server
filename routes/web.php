@@ -108,6 +108,7 @@ Route::post('/add_tournament',[indexController::class,'insert_tournament']);
 Route::get('/tournament/{id}',[indexController::class,'show_tournament'])->name('tournament.show');
 Route::get('/tournament/{id}/edit',[indexController::class,'edit_tournament'])->name('tournament.edit');
 Route::put('/tournament/{id}/update',[indexController::class,'update_tournament'])->name('tournament.update');
+Route::delete('/tournament/{id}',[indexController::class,'destroy_tournament'])->name('tournament.destroy');
 
 
 
