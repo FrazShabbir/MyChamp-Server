@@ -25,7 +25,7 @@ class apiController extends Controller
             $player->email = $Request['email'];
             $player->password = $Request['password'];
             $player->phone =$Request['phone'];
-            $player->status ='0';
+            $player->status ='1';
             if (!empty($Request['image'])) {
                 $file = $Request->file('image');
                 $extension = $file->getClientOriginalExtension();
