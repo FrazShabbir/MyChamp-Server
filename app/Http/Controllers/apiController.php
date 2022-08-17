@@ -282,7 +282,27 @@ class apiController extends Controller
             return json_encode($response);
         }
     }
+public function delete_tournament_player(Request $request,$id){
 
+        $response = array();
+        $tournament = tournament::find($id);
+        if ($tournament) {
+            $player = tournament_players::where('tournament_id', $tournament->id)->where('player_id',$request->player_id)->first();
+            if($player){
+                $player->delete();
+                $response['success'] = 1;
+                $response["message"]= "Player Delete from the tournament";
+            }else{
+                $response['success'] = 0;
+                $response["message"]= "Player Not found in this tournament";
+            }
+
+        }else{
+            $response['success'] = 0;
+            $response["message"]= "No tournament Found";
+        }
+        return json_encode($response);    
+}
 
     public function host_tournament($id)
     {
