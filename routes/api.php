@@ -36,7 +36,10 @@ Route::get("player_profile/{id}", [apicontroller::class, "player_profile"]);
 Route::post("update_player/{id}", [apicontroller::class, "update_player"]);
 Route::post('/add_tournament',[apiController::class,'insert_tournament']);
 Route::post('/tournament/{id}/delete',[apiController::class,'delete_tournament'])->name('tournament.delete');
-Route::put('/tournament/{id}/edit',[apiController::class,'edit_tournament'])->name('api.tournament.edit');
+
+Route::get('/tournament/{id}/edit',[apiController::class,'edit_tournament'])->name('api.tournament.edit');
+Route::put('/tournament/{id}/update',[apiController::class,'update_tournament'])->name('api.tournament.update');
+
 Route::get('/host_tournament/{id}',[apiController::class,'host_tournament']);
 Route::get('/tournaments',[apiController::class,'tournaments']);
 Route::get('/tournaments_players/{id}',[apiController::class,'tournaments_players']);
