@@ -203,13 +203,19 @@ class apiController extends Controller
         }
     }
     public function edit_tournament($id)
-    {
+        {
+            $response = array();
         $tournament = tournament::find($id);
-        $response = array();
-        $response['tournament'] = $tournament;
-        $response['success'] = 1;
-        $response["message"]= "Tournament fetched Successfully";
-        return json_encode($response);
+        if($tournament){
+            $response['success'] = 1;
+            $response["message"]= "Tournament edit successfull";
+            return json_encode($response);
+        }else{
+            $response['success'] = 0;
+            $response["message"]= "Tournament Not Found";
+            return json_encode($response);
+        }
+      
 
     }
 
