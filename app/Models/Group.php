@@ -9,6 +9,7 @@ class Group extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    
     public function host()
     {
         return $this->belongsTo(host::class,'host_id');

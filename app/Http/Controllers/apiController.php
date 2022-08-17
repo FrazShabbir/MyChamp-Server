@@ -259,10 +259,17 @@ class apiController extends Controller
         $response = [];
         $tournament = tournament::find($id);
         if ($tournament) {
-            $Result = $tournament->delete();
+
+           
+
+            $players = tournament_players::where('tournament_id', $tournament->id)->get();
+                foreach ($players as $player) {
+                    $player->delete();
+                }
+                $Result = $tournament->delete();
             if ($Result) {
                 $response['success'] = 1;
-                $response["message"]= "Tournament delete successfull";
+                $response["message"]= "Tournament and Relevent Data delete successfull";
                 return json_encode($response);
             } else {
                 $response['success'] = 0;

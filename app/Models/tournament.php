@@ -11,4 +11,10 @@ class tournament extends Model
 	protected $primaryKey = "id";
     use HasFactory;
 	protected $guarded = [];
+
+	public function player(){
+		return $this->hasMany(tournament_players::class,'player_id');
+	}
+
+	
 }

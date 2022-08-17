@@ -10,6 +10,7 @@ class GroupPlayer extends Model
     protected $guarded = [];
 
     use HasFactory;
+    
     public function group()
     {
         return $this->belongsTo(Group::class,'group_id');

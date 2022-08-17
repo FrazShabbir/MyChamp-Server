@@ -183,6 +183,7 @@ class GroupAPIController extends Controller
         if ($group && $host) {
             if ($host->id == $group->host_id) {
                 $members = GroupPlayer::where('group_id', $group->id)->get();
+                
                 foreach ($members as $member) {
                     $member->delete();
                 }
