@@ -17,8 +17,9 @@ class CreateTournamentInvitesTable extends Migration
             $table->id();
             $table->string('tournament_id');
             $table->string('player_id');
-            $table->string('status')->default('Pending');
+            $table->string('status')->default('2'); // 2 = pending, 1 = approved, 0 = rejected
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

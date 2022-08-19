@@ -7,6 +7,7 @@ use App\Models\host;
 use App\Models\tournament;
 use App\Models\notification;
 use App\Models\tournament_players;
+use App\Models\TournamentInvite;
 
 class apiController extends Controller
 {
@@ -216,7 +217,6 @@ class apiController extends Controller
             $response["message"]= "Tournament Not Found";
             return json_encode($response);
         }
-        
     }
 
     public function update_tournament(Request $request, $id)
@@ -259,14 +259,11 @@ class apiController extends Controller
         $response = [];
         $tournament = tournament::find($id);
         if ($tournament) {
-
-           
-
             $players = tournament_players::where('tournament_id', $tournament->id)->get();
-                foreach ($players as $player) {
-                    $player->delete();
-                }
-                $Result = $tournament->delete();
+            foreach ($players as $player) {
+                $player->delete();
+            }
+            $Result = $tournament->delete();
             if ($Result) {
                 $response['success'] = 1;
                 $response["message"]= "Tournament and Relevent Data delete successfull";
@@ -282,26 +279,25 @@ class apiController extends Controller
             return json_encode($response);
         }
     }
-public function delete_tournament_player(Request $request,$id){
-
-        $response = array();
-        $tournament = tournament::find($id);
-        if ($tournament) {
-            $player = tournament_players::where('tournament_id', $tournament->id)->where('player_id',$request->player_id)->first();
-            if($player){
-                $player->delete();
-                $response['success'] = 1;
-                $response["message"]= "Player Delete from the tournament";
-            }else{
-                $response['success'] = 0;
-                $response["message"]= "Player Not found in this tournament";
-            }
-
-        }else{
+public function delete_tournament_player(Request $request, $id)
+{
+    $response = array();
+    $tournament = tournament::find($id);
+    if ($tournament) {
+        $player = tournament_players::where('tournament_id', $tournament->id)->where('player_id', $request->player_id)->first();
+        if ($player) {
+            $player->delete();
+            $response['success'] = 1;
+            $response["message"]= "Player Delete from the tournament";
+        } else {
             $response['success'] = 0;
-            $response["message"]= "No tournament Found";
+            $response["message"]= "Player Not found in this tournament";
         }
-        return json_encode($response);    
+    } else {
+        $response['success'] = 0;
+        $response["message"]= "No tournament Found";
+    }
+    return json_encode($response);
 }
 
     public function host_tournament($id)
@@ -394,47 +390,150 @@ public function delete_tournament_player(Request $request,$id){
     public function insert_tournament_players(Request $Request)
     {
         $response = array();
-        $tournament_players = tournament_players::where('tournament_id', $Request->tournament_id)
-                    ->where('player_id', $Request->player_id)
-                    ->get()->toarray();
-        $count = count($tournament_players);
-        if ($count == 0) {
-            $host = host::find($Request['player_id']);
-            $player = new tournament_players();
-            $player->name = $host->name;
-            $player->tournament_id = $Request['tournament_id'];
-            $player->player_id = $Request['player_id'];
-            $player->email = $host->email;
-            // $player->password = $host->password;
-            $player->phone = $host->phone;
-            $player->image = $host->image;
-            $player->level = $host->level;
-            $Result = $player->save();
-            if ($Result) {
-                $notification = new notification();
-                $notification->title = "My Champ";
-                $notification->receiver_name = $host->name;
-                $notification->receiver_id = $Request['player_id'];
-                $notification->body = "You have invited for new tournament for more details please check My Champ app.";
-                $notification->date = date("Y-m-d");
-                $notification->save();
-                if ($notification) {
-                    $this->notification($notification);
-                }
-                $response['success'] = 1;
-                $response["message"]= "Player add in tournament successfully";
+        $tournament = tournament::find($Request->tournament_id);
+        $player = host::find($Request->player_id);
+
+        if ($tournament and $player) {
+            $tournament_player = tournament_players::where('tournament_id', $Request->tournament_id)
+            ->where('player_id', $Request->player_id)->get();
+            $count = count($tournament_player);
+            $alreadyInvite = TournamentInvite::where('tournament_id', $Request->tournament_id)->where('player_id', $Request->player_id)->first();
+            if ($alreadyInvite) {
+                $response['success'] = 0;
+                $response["message"]= "Player already invited";
                 return json_encode($response);
+            }
+            if ($count == 0) {
+                $host = host::find($Request['player_id']);
+                $player_invite = TournamentInvite::create([
+                    'tournament_id' => $Request->tournament_id,
+                    'player_id' => $Request->player_id,
+                    'status' => '2',
+
+                ]);
+                // $player = new tournament_players();
+                // $player->name = $host->name;
+                // $player->tournament_id = $Request['tournament_id'];
+                // $player->player_id = $Request['player_id'];
+                // $player->email = $host->email;
+                // // $player->password = $host->password;
+                // $player->phone = $host->phone;
+                // $player->image = $host->image;
+                // $player->level = $host->level;
+                $Result = $player_invite;
+
+                if ($Result) {
+                    $notification = new notification();
+                    $notification->title = "My Champ";
+                    $notification->receiver_name = $host->name;
+                    $notification->receiver_id = $Request['player_id'];
+                    $notification->body = "You have invited for new tournament for more details please check My Champ app.";
+                    $notification->date = date("Y-m-d");
+                    $notification->save();
+                    if ($notification) {
+                        $this->notification($notification);
+                    }
+                    $response['success'] = 1;
+                    $response["message"]= "Player Invited to tournament successfully";
+                    return json_encode($response);
+                } else {
+                    $response['success'] = 0;
+                    $response["message"]= "Failed to invite the player";
+                    return json_encode($response);
+                }
             } else {
                 $response['success'] = 0;
-                $response["message"]= "Player add in tournament Faild";
+                $response["message"]= "Player is already in this tournament";
                 return json_encode($response);
             }
         } else {
             $response['success'] = 0;
-            $response["message"]= "Player is already exist";
+            $response["message"]= "Tournament  or Player not found";
             return json_encode($response);
         }
     }
+
+ public function inviteResponse(Request $request)
+ {
+     // invite id
+     // player id // logged in user id
+     // tournament id
+     // status
+
+     $response = array();
+     $invite = TournamentInvite::find($request->invite_id);
+     $player = host::find($invite->player_id);
+     $tournament = tournament::find($invite->tournament_id);
+
+     if ($invite and $invite->status=='2') {
+
+         if ($request->status=='1') {
+             $invite->status = $request->status;
+             $invite->save();
+             $tournament_player = new tournament_players();
+             $tournament_player->name = $player->name;
+             $tournament_player->tournament_id = $tournament->id;
+             $tournament_player->player_id = $player->id;
+             $tournament_player->email = $player->email;
+             // $tournament_player->password = $player->password;
+             $tournament_player->phone = $player->phone;
+             $tournament_player->image = $player->image;
+             $tournament_player->level = $player->level;
+             $tournament_player->save();
+             if ($tournament_player) {
+                 $tournament_owner = host::find($tournament->host_id);
+                 $notification = new notification();
+                 $notification->title = "My Champ";
+                 $notification->receiver_name = $player->name;
+                 $notification->receiver_id = $tournament_owner->id;
+                 $notification->body = "Player Accepted your invitation for tournament ".$tournament->name;
+                 $notification->date = date("Y-m-d");
+                 $notification->save();
+                 if ($notification) {
+                     $this->notification($notification);
+                 }
+                 $response['success'] = 1;
+                 $response["message"]= "Player Added to tournament successfully";
+                 return json_encode($response);
+             } else {
+                 $response['success'] = 0;
+                 $response["message"]= "Failed to add player to tournament";
+                 return json_encode($response);
+             }
+         } elseif ($request->status=='0') {
+             $invite->status = $request->status;
+             $invite->save();
+
+             $tournament_owner = host::find($tournament->host_id);
+             $notification = new notification();
+             $notification->title = "My Champ";
+             $notification->receiver_name = $player->name;
+             $notification->receiver_id = $tournament_owner->id;
+             $notification->body = "Player Rejected your invitation for tournament ".$tournament->name;
+             $notification->date = date("Y-m-d");
+             $notification->save();
+             if ($notification) {
+                 $this->notification($notification);
+             }
+
+             $response['success'] = 1;
+             $response["message"]= "Player Declined the tournament";
+             return json_encode($response);
+         }else{
+            $response['success'] = 0;
+            $response["message"]= "Invilid status";
+            return json_encode($response);
+         }
+
+       
+     } else {
+         $response['success'] = 0;
+         $response["message"]= "Invite not found";
+         return json_encode($response);
+     }
+ }
+
+
 
 
     public function player_tournaments(Request $Request)

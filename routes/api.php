@@ -45,7 +45,9 @@ Route::put('/tournament/{id}/update',[apiController::class,'update_tournament'])
 Route::get('/host_tournament/{id}',[apiController::class,'host_tournament']);
 Route::get('/tournaments',[apiController::class,'tournaments']);
 Route::get('/tournaments_players/{id}',[apiController::class,'tournaments_players']);
-Route::post('/insert_tournament_players',[apiController::class,'insert_tournament_players']);
+Route::post('/insert_tournament_players',[apiController::class,'insert_tournament_players']); // insert players in tournament via invite
+Route::post('/invite-response',[apiController::class,'inviteResponse']); // capture invite response
+
 Route::post('/player_tournaments',[apiController::class,'player_tournaments']);
 Route::post('/player_add_tournaments',[apiController::class,'player_add_tournaments']);
 
