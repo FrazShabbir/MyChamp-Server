@@ -50,6 +50,25 @@ class GroupAPIController extends Controller
         }
 
     }
+    public function showGroup($id){
+        $group = Group::where('id', $id)->first();
+        if ($group) {
+            $members = $group->players;
+            $response['success'] = 1;
+            $response['message'] = "Group found";
+            $response['group'] = $group;
+            
+            foreach($members as $i){
+                $members[] = $i->player;
+            }
+            $response['members'] = $members;
+            return json_encode($response);
+        } else {
+            $response['success'] = 0;
+            $response['message'] = "Group not found";
+            return json_encode($response);
+        }
+    }
     public function groupsOfHost($id)
     {
         $response  =[];

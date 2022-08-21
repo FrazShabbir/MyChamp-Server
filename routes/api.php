@@ -23,6 +23,8 @@ use App\Http\Controllers\Api\GroupAPIController;
 // Groups APIs
 Route::post("group/create", [GroupAPIController::class, "createGroup"]);
 Route::put("group/{id}/edit", [GroupAPIController::class, "editGroup"]);
+Route::get("group/{id}/", [GroupAPIController::class, "showGroup"]);
+
 Route::post("group/player/add", [GroupAPIController::class, "addPlayerToGroup"]);
 Route::post("group/player/delete", [GroupAPIController::class, "removePlayerToGroup"]);
 Route::get("all-groups/{id}", [GroupAPIController::class, "groupsOfHost"]);

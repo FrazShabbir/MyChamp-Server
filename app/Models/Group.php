@@ -18,5 +18,8 @@ class Group extends Model
     {
         return $this->hasMany(GroupPlayer::class,'group_id');
     }
-
+    // public function player()
+    // {
+    //     return $this->hasMany(host::class,'player_id');
+    // }
 }
