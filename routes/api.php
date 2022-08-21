@@ -30,6 +30,8 @@ Route::post("group/player/delete", [GroupAPIController::class, "removePlayerToGr
 Route::get("all-groups/{id}", [GroupAPIController::class, "groupsOfHost"]);
 Route::get("group/player/list/{id}", [GroupAPIController::class, "listPlayerInGroup"]);
 Route::post("group/delete", [GroupAPIController::class, "deleteGroup"]);
+Route::post("group/announcement/create/{id}", [GroupAPIController::class, "createAnnouncement"]);
+Route::delete("group/announcement/delete/{id}", [GroupAPIController::class, "deleteAnnouncement"]);
 
 
 // Tournament APIs

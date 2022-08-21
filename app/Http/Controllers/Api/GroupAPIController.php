@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\GroupPlayer;
 use App\Models\Group;
 use App\Models\host;
+use App\Models\GroupAnnouncement;
 
 class GroupAPIController extends Controller
 {
@@ -32,7 +33,8 @@ class GroupAPIController extends Controller
             return json_encode($response);
         }
     }
-    public function editGroup(Request $request,$id){
+    public function editGroup(Request $request, $id)
+    {
         $response  =[];
         $group = Group::where('id', $id)->first();
         if ($group and $group->host_id == $request->host_id) {
@@ -48,17 +50,17 @@ class GroupAPIController extends Controller
             $response['message'] = "Group not found Or Invalid Action";
             return json_encode($response);
         }
-
     }
-    public function showGroup($id){
-        $group = Group::with('host')->where('id', $id)->first();
+    public function showGroup($id)
+    {
+        $group = Group::with('host','annoucements')->where('id', $id)->first();
         if ($group) {
             $members = $group->players;
             $response['success'] = 1;
             $response['message'] = "Group found";
             $response['group'] = $group;
-            
-            foreach($members as $i){
+
+            foreach ($members as $i) {
                 $members[] = $i->player;
             }
             $response['members'] = $members;
@@ -196,15 +198,14 @@ class GroupAPIController extends Controller
         if (!$group) {
             $response['message'] = "Group Not Found";
         }
-        if(!$host and !$group){
+        if (!$host and !$group) {
             $response['message'] = "Group and Host Not Found";
-          
         }
 
         if ($group && $host) {
             if ($host->id == $group->host_id) {
                 $members = GroupPlayer::where('group_id', $group->id)->get();
-                
+
                 foreach ($members as $member) {
                     $member->delete();
                 }
@@ -219,6 +220,64 @@ class GroupAPIController extends Controller
             }
         } else {
             $response['success'] = 0;
+            return json_encode($response);
+        }
+    }
+
+    public function createAnnouncement(Request $request, $id)
+    {
+        $response  =[];
+        $group = Group::where('id', $id)->first();
+
+        if ($group) {
+            $announcement = GroupAnnouncement::create([
+                'group_id' => $id,
+                'announcement' => $request->announcement,
+            ]);
+
+            if ($announcement) {
+                $response['success'] = 1;
+                $response['message'] = "Announcement has been created successfully";
+                return json_encode($response);
+            } else {
+                $response['success'] = 0;
+                $response['message'] = "Error in Announcement Creation";
+                return json_encode($response);
+            }
+        }else{
+            $response['success'] = 0;
+            $response['message'] = "Group Not Found";
+            return json_encode($response);
+        }
+       
+    }
+    public function listAnnouncement($id)
+    {
+        $announcements = GroupAnnouncement::with('group')->where('group_id', $id)->get();
+        $response  =[];
+        if ($announcements) {
+            $response['success'] = 1;
+            $response['message'] = "Announcements in group";
+            $response['announcements'] = $announcements;
+            return json_encode($response);
+        } else {
+            $response['success'] = 0;
+            $response['message'] = "No Announcements in group";
+            return json_encode($response);
+        }
+    }
+    public function deleteAnnouncement($id)
+    {
+        $announcement = GroupAnnouncement::where('id', $id)->first();
+        $response  =[];
+        if ($announcement) {
+            $announcement->delete();
+            $response['success'] = 1;
+            $response['message'] = "Announcement has been deleted successfully";
+            return json_encode($response);
+        } else {
+            $response['success'] = 0;
+            $response['message'] = "Announcement Not Found";
             return json_encode($response);
         }
     }
