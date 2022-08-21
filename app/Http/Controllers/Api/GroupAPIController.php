@@ -19,6 +19,7 @@ class GroupAPIController extends Controller
             $group = Group::create([
                 'host_id' => $request->host_id,
                 'name' => $request->name,
+                'description' => $request->description,
             ]);
 
             $response['success'] = 1;
@@ -36,6 +37,7 @@ class GroupAPIController extends Controller
         $group = Group::where('id', $id)->first();
         if ($group and $group->host_id == $request->host_id) {
             $group->name = $request->name;
+            $group->description = $request->description;
             $group->save();
             $response['success'] = 1;
             $response['message'] = "Your group has been updated successfully";

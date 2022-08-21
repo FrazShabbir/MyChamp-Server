@@ -17,6 +17,7 @@ class CreateGroupsTable extends Migration
             $table->id();
             $table->string('host_id');
             $table->string('name')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

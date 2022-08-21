@@ -27,7 +27,7 @@ class AddPlayerApprovalStatus extends Migration
     public function down()
     {
         Schema::table('tournament_players', function (Blueprint $table) {
-            //
+            $table->dropColumn('host_approval');
         });
     }
 }

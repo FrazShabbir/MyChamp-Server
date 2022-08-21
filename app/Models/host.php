@@ -11,4 +11,8 @@ class host extends Model
 	protected $primaryKey = "id";
 	
     use HasFactory;
+	public function tournaments(){
+		return this->hasMany('App\Models\tournament','host_id');
+	}
 }
+

@@ -119,7 +119,10 @@ class apiController extends Controller
                 $host["updated_at"] = $row['updated_at'];
                 array_push($response["host"], $host);
             }
-
+            $invites = TournamentInvite::where('player_id', $id)->get();
+            
+            // $response["tournaments"] = $tournaments;
+            $response["invites"] = $invites;
             $response['success'] = 1;
             $response["message"]= "All users fetched Successfully";
             return json_encode($response);
