@@ -51,7 +51,7 @@ class GroupAPIController extends Controller
 
     }
     public function showGroup($id){
-        $group = Group::where('id', $id)->first();
+        $group = Group::with('host')->where('id', $id)->first();
         if ($group) {
             $members = $group->players;
             $response['success'] = 1;
