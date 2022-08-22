@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>My Champ</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" type="text/css" href="{{URL::asset('/DataTables/datatables.min.css')}}" />
     <!-- <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css" /> -->

@@ -18,7 +18,7 @@
                             <th>Venue</th>
                             <th>Host Name</th>
                         
-                            <th>status</th>
+                            {{-- <th>status</th> --}}
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -34,7 +34,7 @@
                                 <td>{{ $row->venue }}</td>
                                 <td>{{ $row->host_name }}</td>
                        
-                                @if ($row->status == 1)
+                                {{-- @if ($row->status == 1)
                                     <td>
                                         <!-- <button class="btn btn-sm btn-success">Accepted</button> -->
                                         <a href="" data-id="<?= $row['id'] ?>" data-toggle="modal"
@@ -53,7 +53,7 @@
                                             Declined
                                         </a>
                                     </td>
-                                @endif
+                                @endif --}}
                                 <td>
                                     {{-- <a href="{{ url('/tournament_players', $row->id) }}" class="btn text-white btn-sm"
                                         style="background: #4675A9">

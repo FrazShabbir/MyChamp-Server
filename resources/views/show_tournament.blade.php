@@ -2,22 +2,39 @@
 @section('main-section')
     <div class="row">
         <div class="col-12">
-            <form action="{{route('tournament.destroy',$tournament->id)}}" method="post">
+
+
+            {{-- <a href="{{ route('tournament.edit', $tournament->id) }}">
+                <span class="btn text-white mb-4" style="background: #4675A9">Edit Tournament</span>
+            </a> --}}
+
+            <a href="{{ url('/tournament_players', $tournament->id) }}">
+                <span class="btn text-white mb-4" style="background: #4675A9">Tournament Players</span>
+            </a>
+
+
+
+            <a href="#" class="btn text-white mb-4 delete_company" style="background: #f02318">Delete Tournament</a>
+
+            <form action="{{ route('tournament.destroy', $tournament->id) }}" method="post" id="DeletTournament">
                 @csrf
-                {{@method_field('DELETE')}}
-
-            <a href="{{ route('tournament.edit',$tournament->id)}}">
-                <button class="btn text-white mb-4" style="background: #4675A9">Edit Tournament</button>
-            </a>
-            <a href="{{ url('/tournament_players', $tournament->id)}}">
-                <button class="btn text-white mb-4" style="background: #4675A9">Tournament Players</button>
-            </a>
-
-          
-               
-                <button class="btn text-white mb-4" type="submit" style="background: #f02318">Delete Tournament</button>
-           
+                {{ @method_field('DELETE') }}
             </form>
+
+            <script>
+                $(".delete_company").click(function() {
+
+                   var agree=confirm("Are you sure you wish to continue?");
+                    if (agree){
+                   event.preventDefault()
+                 
+                  
+                    $('#DeletTournament').submit();
+                    }
+            
+                });
+            </script>
+
             <table id="example" class="table table-responsive-lg table-bordered">
                 <thead>
                     <tr>
@@ -117,4 +134,4 @@
 
 
         </div>
-       @endsection(main-section)
+    @endsection(main-section)
