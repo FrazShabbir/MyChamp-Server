@@ -24,7 +24,7 @@
             <script>
                 $(".delete_company").click(function() {
 
-                   var agree=confirm("Are you sure you wish to continue?");
+                   var agree=confirm("Are you sure you want to delete this tournament?");
                     if (agree){
                    event.preventDefault()
                  
