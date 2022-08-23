@@ -8,13 +8,15 @@ use App\Models\tournament;
 use App\Models\notification;
 use App\Models\tournament_players;
 use App\Models\TournamentInvite;
+use App\Models\Group;
+use App\Models\GroupPlayer;
 
 class apiController extends Controller
 {
     public function register(Request $Request)
     {
         $response = array();
-        $player_name = host::where('email', $Request->email)->get()->toarray();
+        $player_name = host::where('email', $Request->email)->where('type', $Request->type)->get()->toarray();
         //$player_name = host::where('phone',$Request->phone)->orWhere('email',$Request->email)->get()->toarray();
         //return $player_name;
 
@@ -49,7 +51,7 @@ class apiController extends Controller
             }
         } else {
             $response['success'] = 0;
-            $response["message"]= "User With This Email  Already Exist";
+            $response["message"]= "User With This Email and type  Already Exist";
             return json_encode($response);
         }
     }
@@ -61,6 +63,7 @@ class apiController extends Controller
         $response = array();
         $player = host::where('email', $Request->email)
                      ->where('password', $Request->password)
+                     ->where('type', $Request->type)
                      ->get()->toarray();
         if ($player) {
             foreach ($player as $row) {
@@ -87,6 +90,7 @@ class apiController extends Controller
                 $response["message"]= "You are disable";
                 return json_encode($response);
             }
+
         } else {
             $response['success'] = 0;
             $response["message"]= "Please enter correct email and password";
@@ -98,7 +102,7 @@ class apiController extends Controller
     public function player_profile($id)
     {
         $response = array();
-        $player = host::where('id', $id)->get();
+        $player = host::with('tournaments')->where('id', $id)->get();
         $count = count($player);
 
 
@@ -119,12 +123,18 @@ class apiController extends Controller
                 $host["updated_at"] = $row['updated_at'];
                 array_push($response["host"], $host);
             }
-            $invites = TournamentInvite::where('player_id', $id)->get();
-            
-            // $response["tournaments"] = $tournaments;
+            $invites = TournamentInvite::where('player_id', $id)->where('status',2)->get();
+            $tournaments = tournament::with('player')->where('host_id', $id)->get();
+            $notifications = notification::where('receiver_id', $id)->get();
+            $groups = Group::with('annoucements')->where('host_id', $id)->get();
+          
+
+            $response["groups"] = $groups;
             $response["invites"] = $invites;
+            $response["tournaments"] = $tournaments;
+            $response["notifications"] = $notifications;
             $response['success'] = 1;
-            $response["message"]= "All users fetched Successfully";
+            $response["message"]= "All user's  data fetched Successfully";
             return json_encode($response);
         } else {
             $response['success'] = 0;

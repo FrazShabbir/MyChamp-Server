@@ -12,7 +12,7 @@ class host extends Model
 	
     use HasFactory;
 	public function tournaments(){
-		return this->hasMany('App\Models\tournament','host_id');
+		return $this->hasMany('App\Models\tournament','host_id');
 	}
 }
 

@@ -19,9 +19,11 @@ class UserAuthAPIController extends Controller
         if ($type == 'admin') {
             $user = admin::where('email', $email)->first();
         } elseif ($type == 'host') {
-            $user = host::where('email', $email)->first();
+            $user = host::where('email', $email)->where('type','host')->first();
         }
-
+        elseif ($type == 'player') {
+            $user = host::where('email', $email)->where('type','player')->first();
+        }
         if (!$user) {
             return response()->json(['status' => 'error', 'message' => 'User not found']);
         } else {
