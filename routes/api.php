@@ -44,6 +44,9 @@ Route::post('/tournament/{id}/delete',[apiController::class,'delete_tournament']
 Route::post('/tournament/player/{id}/delete',[apiController::class,'delete_tournament_player'])->name('tournament.player.delete');
 
 Route::get('/tournament/{id}/edit',[apiController::class,'edit_tournament'])->name('api.tournament.edit');
+Route::get('/tournament/{id}',[apiController::class,'show_tournament'])->name('api.tournament.show');
+Route::post('/tournament/player/approval/response/{id}',[apiController::class,'hostResponse'])->name('api.tournament.hostResponse'); // id is tournament_player_id (row)
+
 Route::put('/tournament/{id}/update',[apiController::class,'update_tournament'])->name('api.tournament.update');
 
 Route::get('/host_tournament/{id}',[apiController::class,'host_tournament']);

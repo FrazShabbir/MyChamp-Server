@@ -13,10 +13,11 @@ class tournament extends Model
 	protected $guarded = [];
 
 	public function player(){
-		return $this->hasMany(tournament_players::class,'player_id');
+		return $this->hasMany(tournament_players::class,'tournament_id');
 	}
 
 	public function host(){
 		return $this->belongsTo(host::class,'host_id');
 	}
+	
 }

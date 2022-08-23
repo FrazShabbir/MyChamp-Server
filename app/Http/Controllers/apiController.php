@@ -90,7 +90,6 @@ class apiController extends Controller
                 $response["message"]= "You are disable";
                 return json_encode($response);
             }
-
         } else {
             $response['success'] = 0;
             $response["message"]= "Please enter correct email and password";
@@ -123,11 +122,11 @@ class apiController extends Controller
                 $host["updated_at"] = $row['updated_at'];
                 array_push($response["host"], $host);
             }
-            $invites = TournamentInvite::where('player_id', $id)->where('status',2)->get();
+            $invites = TournamentInvite::where('player_id', $id)->where('status', 2)->get();
             $tournaments = tournament::with('player')->where('host_id', $id)->get();
             $notifications = notification::where('receiver_id', $id)->get();
             $groups = Group::with('annoucements')->where('host_id', $id)->get();
-          
+
 
             $response["groups"] = $groups;
             $response["invites"] = $invites;
@@ -231,6 +230,78 @@ class apiController extends Controller
             return json_encode($response);
         }
     }
+    public function show_tournament($id)
+    {
+        $response = array();
+        $tournament = tournament::with('player')->find($id);
+        $pending_invites = TournamentInvite::where('tournament_id', $id)->where('status', 2)->get();
+        $accepted_invites =  tournament_players::where('tournament_id', $id)->where('host_approval', 2)->get();
+        $rejected_invites = TournamentInvite::where('tournament_id', $id)->where('status', 0)->get();
+
+        if ($tournament) {
+            $response["pending_invites"] =$pending_invites;
+            $response["accepted_invites"] =$accepted_invites;
+            $response["rejected_invites"] =$rejected_invites;
+            // $response["host_response"] =$host_response;
+            $response["tournament"] =$tournament;
+            $response['success'] = 1;
+            $response["message"]= "Tournament fetched successfull";
+            return json_encode($response);
+        } else {
+            $response['success'] = 0;
+            $response["message"]= "Tournament Not Found";
+            return json_encode($response);
+        }
+    }
+public function hostResponse(Request $request, $id)
+{
+    $reponse = [];
+    $tournament_player = tournament_players::find($id);
+    // return  $tournament_player;
+    if ($tournament_player) {
+        $tournament = tournament::find($tournament_player->tournament_id);
+
+        if ($request->host_approval==1) {
+            $tournament_player->host_approval = 1;
+            $tournament_player->save();
+
+            $notification = new notification();
+            $notification->title = "My Champ";
+            $notification->receiver_name = $tournament_player->name;
+            $notification->receiver_id = $tournament_player->player_id;
+            $notification->body = "Host of the tournament ".$tournament->name .' Approved your request';
+            $notification->date = date("Y-m-d");
+            $notification->save();
+
+
+            $response['success'] = 1;
+            $response["message"]= "Host Approval Successfull";
+            return json_encode($response);
+        } elseif ($request->host_approval==0) {
+            $tournament_player->host_approval = 0;
+            $tournament_player->save();
+            $tournament_player->delete();
+            $notification = new notification();
+            $notification->title = "My Champ";
+            $notification->receiver_name = $tournament_player->name;
+            $notification->receiver_id = $tournament_player->player_id;
+            $notification->body = "Host of the tournament ".$tournament->name .' Rejected your request';
+            $notification->date = date("Y-m-d");
+            $notification->save();
+
+            $response['success'] = 1;
+            $response["message"]= "Host Rejection Successfull";
+            return json_encode($response);
+        }
+
+
+        return json_encode($response);
+    } else {
+        $response['success'] = 0;
+        $response["message"]= "No Player Found";
+        return json_encode($response);
+    }
+}
 
     public function update_tournament(Request $request, $id)
     {
@@ -479,7 +550,6 @@ public function delete_tournament_player(Request $request, $id)
      $tournament = tournament::find($invite->tournament_id);
 
      if ($invite and $invite->status=='2') {
-
          if ($request->status=='1') {
              $invite->status = $request->status;
              $invite->save();
@@ -532,13 +602,11 @@ public function delete_tournament_player(Request $request, $id)
              $response['success'] = 1;
              $response["message"]= "Player Declined the tournament";
              return json_encode($response);
-         }else{
-            $response['success'] = 0;
-            $response["message"]= "Invilid status";
-            return json_encode($response);
+         } else {
+             $response['success'] = 0;
+             $response["message"]= "Invilid status";
+             return json_encode($response);
          }
-
-       
      } else {
          $response['success'] = 0;
          $response["message"]= "Invite not found";
