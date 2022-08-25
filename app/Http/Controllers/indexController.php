@@ -29,10 +29,13 @@ class indexController extends Controller
                     ->get();
             $host_count = count($host);
             $player_count = count($player);
+
             $accepted_count = count($accepted);
             $declined_count = count($declined);
+            $tournaments = tournament::all();
+            $tournament_total = count($tournaments);
 
-            $data = compact('host_count', 'player_count', 'accepted_count', 'declined_count');
+            $data = compact('host_count', 'player_count', 'accepted_count', 'declined_count','tournament_total');
             return view('index')->with($data);
         } else {
             return redirect('/');

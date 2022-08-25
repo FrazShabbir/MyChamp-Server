@@ -108,6 +108,18 @@ background:#eee;
         <div class="col-lg-6 col-sm-6">
             <div class="card-box bg-green">
                 <div class="inner">
+                    <h3> {{$tournament_total}} </h3>
+                    <p class="text-white"> Total  Tournaments  </p>
+                </div>
+                <div class="icon">
+                  <i class="fa-solid fa-person-circle-check" aria-hidden="true"></i>
+                </div>
+                <a href="{{url('/tournament')}}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        {{-- <div class="col-lg-6 col-sm-6">
+            <div class="card-box bg-green">
+                <div class="inner">
                     <h3> {{$accepted_count}} </h3>
                     <p class="text-white"> Accepted  Tournaments  </p>
                 </div>
@@ -116,8 +128,8 @@ background:#eee;
                 </div>
                 <a href="{{url('/tournament')}}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-        </div>
-        <div class="col-lg-6 col-sm-6">
+        </div> --}}
+        {{-- <div class="col-lg-6 col-sm-6">
             <div class="card-box bg-orange">
                 <div class="inner">
                     <h3> {{$declined_count}} </h3>
@@ -128,7 +140,7 @@ background:#eee;
                 </div>
                 <a href="{{url('/tournament')}}" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
             </div>
-        </div>
+        </div> --}}
       
     </div>
    
