@@ -738,7 +738,7 @@ public function delete_tournament_player(Request $request, $id)
             return json_encode($response);
         } else {
             $response['success'] = 0;
-            $response["message"]= "Data cannot be exist";
+            $response["message"]= "NO DATA FOUND";
             return json_encode($response);
         }
     }
