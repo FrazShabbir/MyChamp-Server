@@ -43,7 +43,13 @@
                       <option @if ($host->level == "4.5") selected @endif>4.5</option>
                       <option @if ($host->level == "5") selected @endif>5</option>
                     </select>
-                   
+
+                    <label class="form-label mt-3">Status</label>
+                    <select class="form-control" name="status">
+                        <option @if ($host->status == '0') selected @endif value="0">Pending</option>
+                        <option @if ($host->status == '1') selected @endif value="1">Approved</option>
+                      
+                    </select>
                     <!-- <a href="{{url('signup')}}" class="mt-5" >No account Sign Up</a> -->
                     <button class="btn mt-3 btn-light" type="submite">Update</button>
                 </form>

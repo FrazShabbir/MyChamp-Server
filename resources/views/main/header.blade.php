@@ -91,9 +91,9 @@
                     <a href="{{url('tournament')}}">Tournament </a>
                 </li>
 
-                <li <?php if (Request::url() == url('/tournament_players', [$id])or Request::url() == url('/add_tournament_players' , [$id]) ) { ?> style = "background: white;color: gray" <?php } ?> >
+                {{-- <li <?php if (Request::url() == url('/tournament_players', [$id])or Request::url() == url('/add_tournament_players' , [$id]) ) { ?> style = "background: white;color: gray" <?php } ?> >
                     <a href="{{url('tournament_players', '0')}}">Tournament Players</a>
-                </li>
+                </li> --}}
 
                
                 

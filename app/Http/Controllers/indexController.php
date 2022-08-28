@@ -165,7 +165,7 @@ class indexController extends Controller
             $host->email = $Request['email'];
             $host->password = $Request['password'];
             $host->phone =$Request['phone'];
-            $host->status =$host->status;
+            $host->status = $Request['status'] ?? $host->status;
             if (!empty($Request['image'])) {
                 $file = $Request->file('image');
                 $extension = $file->getClientOriginalExtension();
@@ -283,7 +283,7 @@ class indexController extends Controller
             $host->email = $Request['email'];
             $host->password = $Request['password'];
             $host->phone =$Request['phone'];
-            $host->status =$host->status;
+            $host->status =$Request['status']??$host->status;
             if (!empty($Request['image'])) {
                 $file = $Request->file('image');
                 $extension = $file->getClientOriginalExtension();
