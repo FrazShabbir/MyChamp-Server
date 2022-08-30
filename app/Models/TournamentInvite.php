@@ -10,4 +10,8 @@ class TournamentInvite extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function tournament()
+    {
+        return $this->belongsTo('App\Models\Tournament');
+    }
 }

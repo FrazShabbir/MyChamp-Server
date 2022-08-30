@@ -38,6 +38,9 @@ Route::delete("group/announcement/delete/{id}", [GroupAPIController::class, "del
 Route::post("player_login", [apicontroller::class, "player_login"]);
 Route::get("player_profile/{id}", [apicontroller::class, "player_profile"]);
 Route::post("update_player/{id}", [apicontroller::class, "update_player"]);
+
+Route::get("player/invites/{id}", [apicontroller::class, "player_invite"]);
+
 Route::post('/add_tournament',[apiController::class,'insert_tournament']);
 Route::post('/tournament/{id}/delete',[apiController::class,'delete_tournament'])->name('tournament.delete');
 
@@ -54,6 +57,7 @@ Route::get('/tournaments',[apiController::class,'tournaments']);
 Route::get('/tournaments_players/{id}',[apiController::class,'tournaments_players']);
 Route::post('/insert_tournament_players',[apiController::class,'insert_tournament_players']); // insert players in tournament via invite
 Route::post('/invite-response',[apiController::class,'inviteResponse']); // capture invite response
+
 
 Route::post('/player_tournaments',[apiController::class,'player_tournaments']);
 Route::post('/player_add_tournaments',[apiController::class,'player_add_tournaments']);

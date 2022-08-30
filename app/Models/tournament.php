@@ -19,5 +19,8 @@ class tournament extends Model
 	public function host(){
 		return $this->belongsTo(host::class,'host_id');
 	}
+	public function invites(){
+		return $this->hasMany(TournamentInvite::class,'tournament_id');
+	}
 	
 }

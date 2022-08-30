@@ -174,7 +174,17 @@ class apiController extends Controller
             return json_encode($response);
         }
     }
+public function player_invite($id){
+    $response = array();
+    $player = host::where('id', $id)->first();
+    $invites = TournamentInvite::with('tournament')->where('player_id', $id)->where('status', 2)->get();
+    $response["invites"] = $invites;
+    $response["player"] = $player;
+    $response['success'] = 1;
+    $response["message"]= "All user's  data fetched Successfully";
+    return json_encode($response);
 
+}
 
 
     public function insert_tournament(Request $Request)
@@ -235,7 +245,7 @@ class apiController extends Controller
         $response = array();
         $tournament = tournament::with('player')->find($id);
         $pending_invites = TournamentInvite::where('tournament_id', $id)->where('status', 2)->get();
-        $accepted_invites =  tournament_players::where('tournament_id', $id)->where('host_approval', 2)->get();
+        $accepted_invites =  tournament_players::where('tournament_id', $id)->where('host_approval', 1)->get();
         $rejected_invites = TournamentInvite::where('tournament_id', $id)->where('status', 0)->get();
 
         if ($tournament) {
@@ -292,6 +302,9 @@ public function hostResponse(Request $request, $id)
             $response['success'] = 1;
             $response["message"]= "Host Rejection Successfull";
             return json_encode($response);
+        }else{
+            $response['success'] = 0;
+            $response["message"]= "Invalid Status";
         }
 
 
