@@ -55,12 +55,12 @@ class apiController extends Controller
                     });
     
                     $response['success'] = 1;
-                    $response["message"]= "Registration successfull";
+                    $response["message"]= "Registration successfull and otp sent to your email for account activation.";
                     DB::commit();
                     return json_encode($response);
                 } else {
                     $response['success'] = 0;
-                    $response["message"]= "Registration Faild";
+                    $response["message"]= "Registration Faild.";
                     DB::rollBack();
                     return json_encode($response);
                 }
