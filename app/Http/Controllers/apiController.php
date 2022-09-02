@@ -10,51 +10,98 @@ use App\Models\tournament_players;
 use App\Models\TournamentInvite;
 use App\Models\Group;
 use App\Models\GroupPlayer;
-
+use Mail;
+use Illuminate\support\Facades\DB;
 class apiController extends Controller
 {
     public function register(Request $Request)
     {
         $response = array();
-        $player_name = host::where('email', $Request->email)->where('type', $Request->type)->get()->toarray();
-        //$player_name = host::where('phone',$Request->phone)->orWhere('email',$Request->email)->get()->toarray();
-        //return $player_name;
-
-        if (empty($player_name)) {
-            $player = new host();
-            $player->type = $Request['type'];
-            $player->name = $Request['name'];
-            $player->level = $Request['level'];
-            $player->email = $Request['email'];
-            $player->password = $Request['password'];
-            $player->phone =$Request['phone'];
-            $player->status ='1';
-            if (!empty($Request['image'])) {
-                $file = $Request->file('image');
-                $extension = $file->getClientOriginalExtension();
-                $filename = time(). "." . $extension;
-                $file->move('uploads/images/', $filename);
-                $player->image = $filename;
-            } else {
-                $player->image = "icon.png";
-            }
-            // $player->image = 'icon.png';
-            $Result = $player->save();
-            if ($Result) {
-                $response['success'] = 1;
-                $response["message"]= "Registration successfull";
-                return json_encode($response);
+        try {
+            DB::beginTransaction();
+            $player_name = host::where('email', $Request->email)->where('type', $Request->type)->get()->toarray();
+            //$player_name = host::where('phone',$Request->phone)->orWhere('email',$Request->email)->get()->toarray();
+            //return $player_name;
+    
+            if (empty($player_name)) {
+                $player = new host();
+                $player->type = $Request['type'];
+                $player->name = $Request['name'];
+                $player->level = $Request['level'];
+                $player->email = $Request['email'];
+                $player->password = $Request['password'];
+                $player->phone =$Request['phone'];
+                $player->status ='0';
+                if (!empty($Request['image'])) {
+                    $file = $Request->file('image');
+                    $extension = $file->getClientOriginalExtension();
+                    $filename = time(). "." . $extension;
+                    $file->move('uploads/images/', $filename);
+                    $player->image = $filename;
+                } else {
+                    $player->image = "icon.png";
+                }
+                // $player->image = 'icon.png';
+                $Result = $player->save();
+                if ($Result) {
+                    // send email
+                    $otp = rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9);
+                    $player->otp = $otp;
+                    $player->save();
+                    $email = $Request->email;
+                    $mail = Mail::raw('Your account activation OTP is  '.$player->otp.'.', function ($message) use ($email) {
+                        $message->to($email)
+                      ->subject('Your OTP ');
+                    });
+    
+                    $response['success'] = 1;
+                    $response["message"]= "Registration successfull";
+                    DB::commit();
+                    return json_encode($response);
+                } else {
+                    $response['success'] = 0;
+                    $response["message"]= "Registration Faild";
+                    DB::rollBack();
+                    return json_encode($response);
+                }
             } else {
                 $response['success'] = 0;
-                $response["message"]= "Registration Faild";
+                $response["message"]= "User With This Email and type  Already Exist";
+                DB::rollBack();
                 return json_encode($response);
             }
+        } catch (\Throwable $th) {
+            DB::commit();
+            //throw $th;
+        }
+        
+    }
+
+public function confirmOtp(Request $request){
+    $response = array();
+    $email = $request->email;
+    $otp = $request->otp;
+    $type = $request->type;
+    $player = host::where('email', $email)->where('type', $type)->first();
+    if ($player) {
+        if ($player->otp == $otp) {
+            $player->status = '1';
+            $player->save();
+            $response['success'] = 1;
+            $response["message"]= "OTP Confirmed";
+            return json_encode($response);
         } else {
             $response['success'] = 0;
-            $response["message"]= "User With This Email and type  Already Exist";
+            $response["message"]= "OTP Not Match";
             return json_encode($response);
         }
+    } else {
+        $response['success'] = 0;
+        $response["message"]= "User Not Found";
+        return json_encode($response);
     }
+
+}
 
 
 
@@ -174,7 +221,8 @@ class apiController extends Controller
             return json_encode($response);
         }
     }
-public function player_invite($id){
+public function player_invite($id)
+{
     $response = array();
     $player = host::where('id', $id)->first();
     $invites = TournamentInvite::with('tournament')->where('player_id', $id)->where('status', 2)->get();
@@ -183,7 +231,6 @@ public function player_invite($id){
     $response['success'] = 1;
     $response["message"]= "All user's  data fetched Successfully";
     return json_encode($response);
-
 }
 
 
@@ -302,7 +349,7 @@ public function hostResponse(Request $request, $id)
             $response['success'] = 1;
             $response["message"]= "Host Rejection Successfull";
             return json_encode($response);
-        }else{
+        } else {
             $response['success'] = 0;
             $response["message"]= "Invalid Status";
         }

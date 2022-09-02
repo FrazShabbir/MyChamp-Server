@@ -33,9 +33,17 @@ Route::post("group/delete", [GroupAPIController::class, "deleteGroup"]);
 Route::post("group/announcement/create/{id}", [GroupAPIController::class, "createAnnouncement"]);
 Route::delete("group/announcement/delete/{id}", [GroupAPIController::class, "deleteAnnouncement"]);
 
+// Auth APIs
+Route::post("forget-password", [UserAuthAPIController::class, "forgetPassword"]);
+Route::post("confirm-otp", [UserAuthAPIController::class, "confirm_otp"]);
+Route::post("set-password", [UserAuthAPIController::class, "set_password"]);
+Route::post("register", [apicontroller::class, "register"]);
+Route::post("confirm-otp", [apicontroller::class, "confirmOtp"]);
+
+Route::post("player_login", [apicontroller::class, "player_login"]);
+
 
 // Tournament APIs
-Route::post("player_login", [apicontroller::class, "player_login"]);
 Route::get("player_profile/{id}", [apicontroller::class, "player_profile"]);
 Route::post("update_player/{id}", [apicontroller::class, "update_player"]);
 
@@ -64,11 +72,7 @@ Route::post('/player_add_tournaments',[apiController::class,'player_add_tourname
 
 Route::get('/free_players/{id}',[apiController::class,'free_players']);
 
-// Auth APIs
-Route::post("forget-password", [UserAuthAPIController::class, "forgetPassword"]);
-Route::post("confirm-otp", [UserAuthAPIController::class, "confirm_otp"]);
-Route::post("set-password", [UserAuthAPIController::class, "set_password"]);
-Route::post("register", [apicontroller::class, "register"]);
+
 
 
 
