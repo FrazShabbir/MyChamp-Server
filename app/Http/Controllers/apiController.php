@@ -11,7 +11,7 @@ use App\Models\TournamentInvite;
 use App\Models\Group;
 use App\Models\GroupPlayer;
 use Mail;
-use Illuminate\support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 class apiController extends Controller
 {
     public function register(Request $Request)
