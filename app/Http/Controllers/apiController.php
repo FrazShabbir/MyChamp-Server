@@ -12,6 +12,7 @@ use App\Models\Group;
 use App\Models\GroupPlayer;
 use Mail;
 use Illuminate\Support\Facades\DB;
+
 class apiController extends Controller
 {
     public function register(Request $Request)
@@ -22,7 +23,7 @@ class apiController extends Controller
             $player_name = host::where('email', $Request->email)->where('type', $Request->type)->get()->toarray();
             //$player_name = host::where('phone',$Request->phone)->orWhere('email',$Request->email)->get()->toarray();
             //return $player_name;
-    
+
             if (empty($player_name)) {
                 $player = new host();
                 $player->type = $Request['type'];
@@ -53,7 +54,7 @@ class apiController extends Controller
                         $message->to($email)
                       ->subject('Your OTP ');
                     });
-    
+
                     $response['success'] = 1;
                     $response["message"]= "Registration successfull and otp sent to your email for account activation.";
                     DB::commit();
@@ -74,10 +75,10 @@ class apiController extends Controller
             DB::commit();
             //throw $th;
         }
-        
     }
 
-public function confirmOtp(Request $request){
+public function confirmOtp(Request $request)
+{
     $response = array();
     $email = $request->email;
     $otp = $request->otp;
@@ -100,10 +101,33 @@ public function confirmOtp(Request $request){
         $response["message"]= "User Not Found";
         return json_encode($response);
     }
-
 }
 
 
+public function resendOtp(Request $request)
+{
+    $response = array();
+    $email = $request->email;
+    $type = $request->type;
+    $player = host::where('email', $email)->where('type', $type)->first();
+    if ($player) {
+        $otp = rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9).rand(0, 9);
+        $player->otp = $otp;
+        $player->save();
+        $email = $request->email;
+        $mail = Mail::raw('Your account activation OTP is  '.$player->otp.'.', function ($message) use ($email) {
+            $message->to($email)
+          ->subject('Your OTP ');
+        });
+        $response['success'] = 1;
+        $response["message"]= "OTP Resend";
+        return json_encode($response);
+    } else {
+        $response['success'] = 0;
+        $response["message"]= "User Not Found";
+        return json_encode($response);
+    }
+}
 
     public function player_login(Request $Request)
     {
@@ -606,10 +630,11 @@ public function delete_tournament_player(Request $request, $id)
 
      $response = array();
      $invite = TournamentInvite::find($request->invite_id);
-     $player = host::find($invite->player_id);
-     $tournament = tournament::find($invite->tournament_id);
+   
 
      if ($invite and $invite->status=='2') {
+        $player = host::find($invite->player_id);
+        $tournament = tournament::find($invite->tournament_id);
          if ($request->status=='1') {
              $invite->status = $request->status;
              $invite->save();
@@ -644,10 +669,13 @@ public function delete_tournament_player(Request $request, $id)
                  return json_encode($response);
              }
          } elseif ($request->status=='0') {
+
              $invite->status = $request->status;
              $invite->save();
+             $invite->delete();
 
              $tournament_owner = host::find($tournament->host_id);
+
              $notification = new notification();
              $notification->title = "My Champ";
              $notification->receiver_name = $player->name;

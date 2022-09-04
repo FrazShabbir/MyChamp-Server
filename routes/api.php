@@ -39,6 +39,7 @@ Route::post("confirm-otp", [UserAuthAPIController::class, "confirm_otp"]);
 Route::post("set-password", [UserAuthAPIController::class, "set_password"]);
 Route::post("register", [apicontroller::class, "register"]);
 Route::post("confirm-otp", [apicontroller::class, "confirmOtp"]);
+Route::post("resend-otp", [apicontroller::class, "resendOtp"]);
 
 Route::post("player_login", [apicontroller::class, "player_login"]);
 
