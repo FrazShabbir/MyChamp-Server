@@ -315,6 +315,9 @@ public function player_invite($id)
     {
         $response = array();
         $tournament = tournament::with('player')->find($id);
+        $tournament_host = host::find($tournament->host_id);
+        $all_groups = Group::where('host_id', $tournament_host->id)->get();
+       
         $pending_invites = TournamentInvite::where('tournament_id', $id)->where('status', 2)->get();
         $accepted_invites =  tournament_players::where('tournament_id', $id)->where('host_approval', 1)->get();
         $rejected_invites = TournamentInvite::where('tournament_id', $id)->where('status', 0)->get();
@@ -323,6 +326,7 @@ public function player_invite($id)
             $response["pending_invites"] =$pending_invites;
             $response["accepted_invites"] =$accepted_invites;
             $response["rejected_invites"] =$rejected_invites;
+            $response["groups"] =$all_groups;
             // $response["host_response"] =$host_response;
             $response["tournament"] =$tournament;
             $response['success'] = 1;
@@ -334,6 +338,32 @@ public function player_invite($id)
             return json_encode($response);
         }
     }
+
+    public function inviteGroup($id,$group){
+        $response = array();
+        $tournament = tournament::find($id);
+        $group = Group::find($group);
+        $players = GroupPlayer::where('group_id',$group->id)->get();
+        foreach($players as $player){
+            $alreadyInvite = TournamentInvite::where('tournament_id',$tournament->id)->where('player_id',$player->player_id)->first();
+            if(!$alreadyInvite){
+                $invite = new TournamentInvite();
+                $invite->tournament_id = $tournament->id;
+                $invite->player_id = $player->player_id;
+                $invite->status = 2;
+                $invite->save();
+            }
+            // $invite = new TournamentInvite();
+            // $invite->tournament_id = $tournament->id;
+            // $invite->player_id = $player->player_id;
+            // $invite->status = 2;
+            // $invite->save();
+        }
+        $response['success'] = 1;
+        $response["message"]= "Group Invited";
+        return json_encode($response);
+    }
+
 public function hostResponse(Request $request, $id)
 {
     $reponse = [];
