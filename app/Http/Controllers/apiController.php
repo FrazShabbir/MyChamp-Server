@@ -317,7 +317,7 @@ public function player_invite($id)
         $tournament = tournament::with('player')->find($id);
         $tournament_host = host::find($tournament->host_id);
         $all_groups = Group::where('host_id', $tournament_host->id)->get();
-       
+
         $pending_invites = TournamentInvite::where('tournament_id', $id)->where('status', 2)->get();
         $accepted_invites =  tournament_players::where('tournament_id', $id)->where('host_approval', 1)->get();
         $rejected_invites = TournamentInvite::where('tournament_id', $id)->where('status', 0)->get();
@@ -339,35 +339,46 @@ public function player_invite($id)
         }
     }
 
-    public function inviteGroup($id,$group){
+    public function inviteGroup($id, $group)
+    {
         $response = array();
         $tournament = tournament::find($id);
-        $group = Group::find($group);
-        $players = GroupPlayer::where('group_id',$group->id)->get();
-        if($players){
-    foreach ($players as $player) {
-        $alreadyInvite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $player->player_id)->first();
-        if (!$alreadyInvite) {
-            $invite = new TournamentInvite();
-            $invite->tournament_id = $tournament->id;
-            $invite->player_id = $player->player_id;
-            $invite->status = 2;
-            $invite->save();
+        if(!$tournament){
+            $response['success'] = 0;
+            $response["message"]= "Tournament Not Found";
+            return json_encode($response);
         }
-        // $invite = new TournamentInvite();
-        // $invite->tournament_id = $tournament->id;
-        // $invite->player_id = $player->player_id;
-        // $invite->status = 2;
-        // $invite->save();
-    }
-    $response['success'] = 1;
-    $response["message"]= "Group Invited";
-    return json_encode($response);
-}else{
-    $response['success'] = 0;
-    $response["message"]= "No player in this group";
-    return json_encode($response);
-}
+        $find_group = Group::find($group);
+        if(!$find_group){
+            $response['success'] = 0;
+            $response["message"]= "Group Not Found";
+            return json_encode($response);
+        }
+        $players = GroupPlayer::where('group_id', $find_group->id)->get();
+        if ($players) {
+            foreach ($players as $player) {
+                $alreadyInvite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $player->player_id)->first();
+                if (!$alreadyInvite) {
+                    $invite = new TournamentInvite();
+                    $invite->tournament_id = $tournament->id;
+                    $invite->player_id = $player->player_id;
+                    $invite->status = 2;
+                    $invite->save();
+                }
+                // $invite = new TournamentInvite();
+                // $invite->tournament_id = $tournament->id;
+                // $invite->player_id = $player->player_id;
+                // $invite->status = 2;
+                // $invite->save();
+            }
+            $response['success'] = 1;
+            $response["message"]= "Group Invited";
+            return json_encode($response);
+        } else {
+            $response['success'] = 0;
+            $response["message"]= "No player in this group";
+            return json_encode($response);
+        }
     }
 
 public function hostResponse(Request $request, $id)
@@ -666,11 +677,11 @@ public function delete_tournament_player(Request $request, $id)
 
      $response = array();
      $invite = TournamentInvite::find($request->invite_id);
-   
+
 
      if ($invite and $invite->status=='2') {
-        $player = host::find($invite->player_id);
-        $tournament = tournament::find($invite->tournament_id);
+         $player = host::find($invite->player_id);
+         $tournament = tournament::find($invite->tournament_id);
          if ($request->status=='1') {
              $invite->status = $request->status;
              $invite->save();
@@ -705,7 +716,6 @@ public function delete_tournament_player(Request $request, $id)
                  return json_encode($response);
              }
          } elseif ($request->status=='0') {
-
              $invite->status = $request->status;
              $invite->save();
              $invite->delete();
