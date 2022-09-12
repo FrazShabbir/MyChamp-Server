@@ -344,24 +344,30 @@ public function player_invite($id)
         $tournament = tournament::find($id);
         $group = Group::find($group);
         $players = GroupPlayer::where('group_id',$group->id)->get();
-        foreach($players as $player){
-            $alreadyInvite = TournamentInvite::where('tournament_id',$tournament->id)->where('player_id',$player->player_id)->first();
-            if(!$alreadyInvite){
-                $invite = new TournamentInvite();
-                $invite->tournament_id = $tournament->id;
-                $invite->player_id = $player->player_id;
-                $invite->status = 2;
-                $invite->save();
-            }
-            // $invite = new TournamentInvite();
-            // $invite->tournament_id = $tournament->id;
-            // $invite->player_id = $player->player_id;
-            // $invite->status = 2;
-            // $invite->save();
+        if($players){
+    foreach ($players as $player) {
+        $alreadyInvite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $player->player_id)->first();
+        if (!$alreadyInvite) {
+            $invite = new TournamentInvite();
+            $invite->tournament_id = $tournament->id;
+            $invite->player_id = $player->player_id;
+            $invite->status = 2;
+            $invite->save();
         }
-        $response['success'] = 1;
-        $response["message"]= "Group Invited";
-        return json_encode($response);
+        // $invite = new TournamentInvite();
+        // $invite->tournament_id = $tournament->id;
+        // $invite->player_id = $player->player_id;
+        // $invite->status = 2;
+        // $invite->save();
+    }
+    $response['success'] = 1;
+    $response["message"]= "Group Invited";
+    return json_encode($response);
+}else{
+    $response['success'] = 0;
+    $response["message"]= "No player in this group";
+    return json_encode($response);
+}
     }
 
 public function hostResponse(Request $request, $id)
