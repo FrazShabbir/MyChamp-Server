@@ -93,7 +93,7 @@ class GroupAPIController extends Controller
         $response  =[];
         $host = host::where('id', $request->host_id)->where('type', 'host')->first();
         $group = Group::where('id', $request->group_id)->first();
-        $player =  host::where('id', $request->player_id)->where('type', 'player')->first();
+        $player =  host::where('id', $request->player_id)->first();
         if (!$player) {
             $response['message'] = "Player Not Found";
         }
