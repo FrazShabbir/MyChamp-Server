@@ -245,6 +245,24 @@ public function resendOtp(Request $request)
             return json_encode($response);
         }
     }
+
+    public function changePlayerStatus(Request $request, $id)
+    {
+        $response = array();
+        $player = host::find($id);
+        $player->status = $request['status'];
+        $Result = $player->save();
+        if ($Result) {
+            $response['success'] = 1;
+            $response["message"]= "Player Status Changed Successfully";
+            return json_encode($response);
+        } else {
+            $response['success'] = 0;
+            $response["message"]= "Operation Faild";
+            return json_encode($response);
+        }
+    }
+
 public function player_invite($id)
 {
     $response = array();
@@ -343,13 +361,13 @@ public function player_invite($id)
     {
         $response = array();
         $tournament = tournament::find($id);
-        if(!$tournament){
+        if (!$tournament) {
             $response['success'] = 0;
             $response["message"]= "Tournament Not Found";
             return json_encode($response);
         }
         $find_group = Group::find($group);
-        if(!$find_group){
+        if (!$find_group) {
             $response['success'] = 0;
             $response["message"]= "Group Not Found";
             return json_encode($response);
@@ -411,7 +429,7 @@ public function hostResponse(Request $request, $id)
             $tournament_player->delete();
             $tournament_invite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $tournament_player->player_id)->first();
             $tournament_invite->delete();
-            
+
             $notification = new notification();
             $notification->title = "My Champ";
             $notification->receiver_name = $tournament_player->name;
