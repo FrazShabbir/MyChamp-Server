@@ -12,6 +12,6 @@ class TournamentInvite extends Model
 
     public function tournament()
     {
-        return $this->belongsTo('App\Models\Tournament');
+        return $this->belongsTo('App\Models\tournament');
     }
 }
