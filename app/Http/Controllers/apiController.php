@@ -250,6 +250,11 @@ public function resendOtp(Request $request)
     {
         $response = array();
         $player = host::find($id);
+        if(!$player){
+            $response['success'] = 0;
+            $response["message"]= "User Not Found";
+            return json_encode($response);
+        }
         $player->status = $request['status'];
         $Result = $player->save();
         if ($Result) {
