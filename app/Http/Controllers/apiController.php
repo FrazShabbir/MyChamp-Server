@@ -409,6 +409,9 @@ public function hostResponse(Request $request, $id)
             $tournament_player->host_approval = 0;
             $tournament_player->save();
             $tournament_player->delete();
+            $tournament_invite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $tournament_player->player_id)->first();
+            $tournament_invite->delete();
+            
             $notification = new notification();
             $notification->title = "My Champ";
             $notification->receiver_name = $tournament_player->name;
