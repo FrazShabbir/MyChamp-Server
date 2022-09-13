@@ -194,14 +194,19 @@ public function resendOtp(Request $request)
                 array_push($response["host"], $host);
             }
             $invites = TournamentInvite::where('player_id', $id)->where('status', 2)->get();
+            $pending_response = tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 2)->get();
             $tournaments = tournament::with('player')->where('host_id', $id)->get();
             $notifications = notification::where('receiver_id', $id)->get();
             $groups = Group::with('annoucements')->where('host_id', $id)->get();
 
+            $member = tournament_players::where('player_id', $id)->get();
 
             $response["groups"] = $groups;
             $response["invites"] = $invites;
             $response["tournaments"] = $tournaments;
+            $response["invites_response_pending"] = $pending_response;
+            
+            // $response["entered_tournaments"] = $member;
             $response["notifications"] = $notifications;
             $response['success'] = 1;
             $response["message"]= "All user's  data fetched Successfully";
