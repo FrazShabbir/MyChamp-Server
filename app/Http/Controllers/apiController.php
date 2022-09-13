@@ -197,6 +197,7 @@ public function resendOtp(Request $request)
             $pending_response = tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 2)->get();
             $tournaments = tournament::with('player')->where('host_id', $id)->get();
             $added_tournaments =tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 1)->get();
+            $rejected_by_host =tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 0)->get();
             $notifications = notification::where('receiver_id', $id)->get();
             $groups = Group::with('annoucements')->where('host_id', $id)->get();
 
@@ -207,6 +208,7 @@ public function resendOtp(Request $request)
             $response["tournaments"] = $tournaments;
             $response["invites_response_pending"] = $pending_response;
             $response["added_tournaments"] = $added_tournaments;
+            $response["rejected_by_host"] = $rejected_by_host;
             
             // $response["entered_tournaments"] = $member;
             $response["notifications"] = $notifications;
@@ -438,9 +440,10 @@ public function hostResponse(Request $request, $id)
         } elseif ($request->host_approval==0) {
             $tournament_player->host_approval = 0;
             $tournament_player->save();
-            $tournament_player->delete();
-            $tournament_invite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $tournament_player->player_id)->first();
-            $tournament_invite->delete();
+            // $tournament_player->delete();
+
+            // $tournament_invite = TournamentInvite::where('tournament_id', $tournament->id)->where('player_id', $tournament_player->player_id)->first();
+            // $tournament_invite->delete();
 
             $notification = new notification();
             $notification->title = "My Champ";
