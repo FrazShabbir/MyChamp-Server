@@ -196,6 +196,7 @@ public function resendOtp(Request $request)
             $invites = TournamentInvite::where('player_id', $id)->where('status', 2)->get();
             $pending_response = tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 2)->get();
             $tournaments = tournament::with('player')->where('host_id', $id)->get();
+            $added_tournaments =tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 1)->get();
             $notifications = notification::where('receiver_id', $id)->get();
             $groups = Group::with('annoucements')->where('host_id', $id)->get();
 
@@ -205,6 +206,7 @@ public function resendOtp(Request $request)
             $response["invites"] = $invites;
             $response["tournaments"] = $tournaments;
             $response["invites_response_pending"] = $pending_response;
+            $response["added_tournaments"] = $added_tournaments;
             
             // $response["entered_tournaments"] = $member;
             $response["notifications"] = $notifications;
