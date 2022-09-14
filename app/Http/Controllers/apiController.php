@@ -198,7 +198,7 @@ public function resendOtp(Request $request)
             $tournaments = tournament::with('player')->where('host_id', $id)->get();
             $added_tournaments =tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 1)->get();
             $rejected_by_host =tournament_players::with('tournament')->where('player_id', $id)->where('host_approval', 0)->get();
-            $notifications = notification::where('receiver_id', $id)->get();
+            $notifications = notification::with('sender')->with('receiver')->where('receiver_id', $id)->get();
             $groups = Group::with('annoucements')->where('host_id', $id)->get();
 
             $member = tournament_players::where('player_id', $id)->get();
@@ -429,6 +429,7 @@ public function hostResponse(Request $request, $id)
             $notification->title = "My Champ";
             $notification->receiver_name = $tournament_player->name;
             $notification->receiver_id = $tournament_player->player_id;
+            $notification->sender_id = $tournament->host_id;
             $notification->body = "Host of the tournament ".$tournament->name .' Approved your request';
             $notification->date = date("Y-m-d");
             $notification->save();
@@ -449,6 +450,8 @@ public function hostResponse(Request $request, $id)
             $notification->title = "My Champ";
             $notification->receiver_name = $tournament_player->name;
             $notification->receiver_id = $tournament_player->player_id;
+            $notification->sender_id = $tournament->host_id;
+
             $notification->body = "Host of the tournament ".$tournament->name .' Rejected your request';
             $notification->date = date("Y-m-d");
             $notification->save();
@@ -678,6 +681,7 @@ public function delete_tournament_player(Request $request, $id)
                     $notification->title = "My Champ";
                     $notification->receiver_name = $host->name;
                     $notification->receiver_id = $Request['player_id'];
+                    $notification->sender_id = $tournament->host_id;
                     $notification->body = "You have invited for new tournament for more details please check My Champ app.";
                     $notification->date = date("Y-m-d");
                     $notification->save();
@@ -737,6 +741,8 @@ public function delete_tournament_player(Request $request, $id)
                  $notification->title = "My Champ";
                  $notification->receiver_name = $player->name;
                  $notification->receiver_id = $tournament_owner->id;
+                 $notification->sender_id = $player->id;
+
                  $notification->body = "Player Accepted your invitation for tournament ".$tournament->name;
                  $notification->date = date("Y-m-d");
                  $notification->save();
@@ -762,6 +768,8 @@ public function delete_tournament_player(Request $request, $id)
              $notification->title = "My Champ";
              $notification->receiver_name = $player->name;
              $notification->receiver_id = $tournament_owner->id;
+             $notification->sender_id = $player->id;
+
              $notification->body = "Player Rejected your invitation for tournament ".$tournament->name;
              $notification->date = date("Y-m-d");
              $notification->save();

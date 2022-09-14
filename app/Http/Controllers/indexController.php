@@ -623,6 +623,7 @@ class indexController extends Controller
 
                     $player = new tournament_players();
                     $player->name = $host->name;
+                    $tournament_host = tournament::find($tournament_id);
                     $player->tournament_id = $tournament_id;
                     $player->player_id = $ide;
                     $player->email = $host->email;
@@ -636,6 +637,7 @@ class indexController extends Controller
                         $notification->title = "My Champ";
                         $notification->receiver_name = $host->name;
                         $notification->receiver_id = $ide;
+                        $notification->sender_id = $tournament_host->host_id;
                         $notification->body = "You have invited for new tournament for more details please check My Champ app.";
                         $notification->date = date("Y-m-d");
                         $notification->save();
