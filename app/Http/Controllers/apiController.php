@@ -50,6 +50,7 @@ class apiController extends Controller
                     $player->otp = $otp;
                     $player->save();
                     $email = $Request->email;
+                    
                     $mail = Mail::raw('Your account activation OTP is  '.$player->otp.'.', function ($message) use ($email) {
                         $message->to($email)
                       ->subject('Your OTP ');
